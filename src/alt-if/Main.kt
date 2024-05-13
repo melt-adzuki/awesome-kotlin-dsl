@@ -13,13 +13,13 @@ fun main() {
     )
 }
 
-fun altIf(condition: Boolean) = Thennable(condition)
+fun altIf(condition: Boolean) = Thenable(condition)
 
 fun <T> altIf(condition: Boolean, block: () -> T) =
     if (condition) ConditionResult.WasTrue(result = block())
     else ConditionResult.WasFalse()
 
-class Thennable(val condition: Boolean) {
+class Thenable(private val condition: Boolean) {
     infix fun <T> altThen(result: T) =
         if (condition) ConditionResult.WasTrue(result)
         else ConditionResult.WasFalse()
@@ -33,8 +33,7 @@ sealed interface ConditionResult<T> {
     class WasTrue<T>(val result: T) : ConditionResult<T> {
         override infix fun altElse(block: () -> T) = result
         override infix fun altElse(elseResult: T) = result
-        override infix fun altElse(
-            elseIf: ConditionResult<T>) = ConditionResult.WasTrue(result)
+        override infix fun altElse(elseIf: ConditionResult<T>) = WasTrue(result)
     }
     
     class WasFalse<T> : ConditionResult<T> {
